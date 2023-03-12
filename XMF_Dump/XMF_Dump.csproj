@@ -6,5 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+	<Target Name="CopyDLLs" AfterTargets="Build">
+		<Copy SourceFiles="$(TargetDir)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)" />
+	</Target>
 
 </Project>

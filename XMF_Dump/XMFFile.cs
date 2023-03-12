@@ -162,6 +162,16 @@ namespace XMF_Dump
             func2_Param = br.ReadByte();
             func1_Param = br.ReadByte();
         }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return note == 0 && sampleNumber == 0 
+                    && func1 == 0 && func1_Param == 0
+                    && func2 == 0 && func2_Param == 0;
+            }
+        }
     }
 
 }

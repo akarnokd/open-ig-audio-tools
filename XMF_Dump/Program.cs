@@ -34,4 +34,31 @@ void ProcessFile(string filename)
         i++;
     }
     Console.WriteLine();
+
+    using StreamWriter writer = new StreamWriter(filename + "_Tracks.txt");
+
+    int rowCounter = 1;
+    foreach (var trackId in xmf.sectionIndexes)
+    {
+        var section = xmf.instructionSections[trackId];
+
+        foreach (var row in section.rows)
+        {
+            writer.Write(string.Format("[{0:0000}]  |  ", rowCounter));
+            foreach (var instr in row.columns)
+            {
+                if (instr.IsEmpty)
+                {
+                    writer.Write("                          |  ");
+                }
+                else
+                {
+                    writer.Write(string.Format("{0:000} {1:000} [{2:X2}({3:X2}), {4:X2}({5:X2})]  |  ",
+                        instr.note, instr.sampleNumber, instr.func1, instr.func1_Param, instr.func2, instr.func2_Param));
+                }
+            }
+            writer.WriteLine();
+            rowCounter++;
+        }
+    }
 }
