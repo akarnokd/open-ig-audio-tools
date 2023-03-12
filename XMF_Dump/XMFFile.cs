@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XMF_Converter
+namespace XMF_Dump
 {
     public class XMFFile
     {
@@ -30,6 +30,8 @@ namespace XMF_Converter
         {
             version = reader.ReadByte();
 
+            // load in the sample registry
+
             for (int i = 0; i < 256; i++)
             {
                 var regEntry = new SampleRegistry();
@@ -40,6 +42,8 @@ namespace XMF_Converter
                 }
             }
 
+            // loadin the section indexes
+            // a section can be reused via this indirection
             bool endMarkerFound = false;
             for (int i = 0; i < 256; i++)
             {
@@ -71,7 +75,7 @@ namespace XMF_Converter
                 var section = new InstructionSection();
                 instructionSections.Add(section);
 
-                for (int i = 0; i < 0x180; i++)
+                for (int i = 0; i < 64; i++)
                 {
                     var row = new InstructionRow();
                     section.rows.Add(row);
@@ -115,7 +119,7 @@ namespace XMF_Converter
         {
             offset1 = Read3Bytes(br);
             offset2 = Read3Bytes(br);
-            offset2 = Read3Bytes(br);
+            offset3 = Read3Bytes(br);
             offset4 = Read3Bytes(br);
             param0 = br.ReadByte();
             param1 = br.ReadByte();
@@ -123,9 +127,9 @@ namespace XMF_Converter
             sampleBytes = new byte[Length];
         }
 
-        private long Read3Bytes(BinaryReader br)
+        private int Read3Bytes(BinaryReader br)
         {
-            return ((long)br.ReadUInt16()) + br.ReadByte() * 65536;
+            return br.ReadUInt16() + br.ReadByte() * 65536;
         }
     }
 
