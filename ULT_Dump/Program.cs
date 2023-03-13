@@ -13,7 +13,7 @@ void DumpULTFile(string filename)
     using BinaryReader br = new(new FileStream(filename, FileMode.Open));
 
     ultFile.LoadFrom(br);
-
+    Console.WriteLine("== " + Path.GetFileName(filename) + " ==");
     Console.WriteLine("Magic: " + ultFile.magic);
     Console.WriteLine("Version: " + ultFile.version4Digit);
     Console.WriteLine("Title: " + ultFile.songTitle);
@@ -33,6 +33,21 @@ void DumpULTFile(string filename)
         i++;
     }
 
+
     Console.WriteLine("# tracks: " + ultFile.tracks);
     Console.WriteLine("# patterns: " + ultFile.patterns);
+
+    int len = ultFile.samples.Select(v => v.Length).Sum();
+
+    var pos = br.BaseStream.Position;
+
+    Console.WriteLine(string.Format("{0:X8} - {1:X8}", pos,
+        pos + ultFile.tracks * ultFile.patterns * 6 * 32));
+
+    var sampleStart = br.BaseStream.Length - len;
+    Console.WriteLine(string.Format("{0:X8}", sampleStart));
+
+    Console.WriteLine(sampleStart - pos);
+    Console.WriteLine((sampleStart - pos) / (double)(ultFile.tracks));
+    Console.WriteLine((sampleStart - pos) / (double)(ultFile.patterns));
 }
