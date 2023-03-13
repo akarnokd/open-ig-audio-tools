@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace ULT_Dump
 {
+    /// <summary>
+    /// https://fossies.org/linux/libxmp/src/loaders/ult_load.c
+    /// </summary>
     internal class ULTFile
     {
         internal const string magicConst = "MAS_UTrack_";
@@ -34,7 +37,7 @@ namespace ULT_Dump
 
         internal readonly List<byte> trackPans = new();
 
-        internal byte[] trackData;
+        internal readonly List<byte> trackData = new();
 
         internal void LoadFrom(BinaryReader br)
         {
@@ -67,17 +70,44 @@ namespace ULT_Dump
                 trackPans.Add(br.ReadByte());
             }
 
-            /*
-            trackData = new byte[patterns * tracks * 64 * 6];
-            br.Read(trackData);
+            trackData.Capacity = tracks * patterns * 6;
 
             for (int i = 0; i < tracks; i++)
             {
-                var sample = samples[i];
-                sample.data = new byte[sample.Length];
-                br.Read(sample.data);
+                for (int j = 0; j < patterns * 64;)
+                {
+                    var b = br.ReadByte();
+                    var cnt = 1;
+                    if (b == 0xFC)
+                    {
+                        cnt = br.ReadByte();
+                        b = br.ReadByte();
+                    }
+                    var f1 = br.ReadByte();
+                    var f2 = br.ReadByte();
+                    var f3 = br.ReadByte();
+                    var f4 = br.ReadByte();
+
+                    if (cnt == 0)
+                    {
+                        cnt++;
+                    }
+
+                    for (int k = 0; k < cnt; k++)
+                    {
+                        trackData.Add(b);
+                        trackData.Add(f1);
+                        trackData.Add(f2);
+                        trackData.Add(f3);
+                        trackData.Add(f4);
+                    }
+                }
             }
-            */
+            
+            foreach (var smp in samples)
+            {
+                smp.LoadData(br);
+            }
         }
 
         internal static string ReadChars(BinaryReader br, int count)
@@ -142,5 +172,10 @@ namespace ULT_Dump
             finetuneSettings = br.ReadUInt16();
         }
 
+        internal void LoadData(BinaryReader br)
+        {
+            data = new byte[Length];
+            br.Read(data);
+        }
     }
 }
