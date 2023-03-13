@@ -194,18 +194,18 @@ namespace XMF_Dump
 
             OutB(port + 0x103, 0x0A);
             OutW(port + 0x104, (vbegin >> 7) & 8191);
-            OutB(port + 0x103, 0x0A);
-            OutW(port + 0x104, (vbegin & 0x7F) >> 8);
+            OutB(port + 0x103, 0x0B);
+            OutW(port + 0x104, (vbegin & 0x7F) << 8);
 
             OutB(port + 0x103, 0x02);
             OutW(port + 0x104, (vstart >> 7) & 8191);
             OutB(port + 0x103, 0x03);
-            OutW(port + 0x104, (vstart & 0x7F) >> 8);
+            OutW(port + 0x104, (vstart & 0x7F) << 8);
 
             OutB(port + 0x103, 0x04);
             OutW(port + 0x104, (vend >> 7) & 8191);
             OutB(port + 0x103, 0x05);
-            OutW(port + 0x104, (vend & 0x7F) >> 8);
+            OutW(port + 0x104, (vend & 0x7F) << 8);
 
             OutB(port + 0x103, 0x00);
             OutB(port + 0x105, mode);
@@ -216,6 +216,65 @@ namespace XMF_Dump
             OutB(port + 0x000, 0x01);
             OutB(port + 0x103, 0x4C);
             OutB(port + 0x105, 0x03);
+        }
+
+        /// <summary>
+        /// Returns the current voice playback offset
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <returns></returns>
+        internal int GUSVoicePos(int voice)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x103, 0x8A);
+
+            int w = InW(port + 0x104);
+            OutB(port + 0x103, 0x8B);
+            int b = InW(port + 0x104);
+
+            return (w << 7) + (b >> 8);
+        }
+
+        internal void GUSStopVoice(int voice)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x103, 0x80);
+            int b = InB(port + 0x105);
+
+            OutB(port + 0x103, 0x00);
+            OutB(port + 0x105, (b & 0xDF) | 0x03);
+            GUSDelay();
+            OutB(port + 0x103, 0x00);
+            OutB(port + 0x105, (b & 0xDF) | 0x03);
+        }
+
+        /// <summary>
+        /// Control a voice.
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="control">
+        /// Bitflags.
+        /// 0: Voice is stopped
+        /// 1: Stop voice
+        /// 2: 16 bit data
+        /// 3: loop back to sample begin address
+        /// 4: Bi-directional loop enable
+        /// 5: Enable IRQ
+        /// 6: 1 - Decreasing addresses, 0 - increasing addresses
+        /// 7: IRQ pending
+        /// </param>
+        internal void GUSVoiceControl(int voice, int control)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+
+            OutB(port + 0x103, 0x00);
+            OutB(port + 0x105, control);
         }
 
         // Helper methods denoting port operations (do nothing, just so the examples compile).
@@ -236,5 +295,63 @@ namespace XMF_Dump
         /// <param name="port"></param>
         /// <param name="value"></param>
         internal void OutW(int port, int value) { }
+    }
+
+    public enum GUS_Voice_Register
+    {
+        Set_Control = 0x00,
+        Set_Frequency = 0x01,
+
+        Set_Start_High = 0x02,
+        Set_Start_Low = 0x03,
+
+        Set_End_High = 0x04,
+        Set_End_Low = 0x05,
+
+        Set_Volume_Rate = 0x06,
+        Set_Volume_Start = 0x07,
+        Set_Volume_End = 0x08,
+
+        Set_Volume = 0x09,
+
+        // Where the sample begins
+        Set_Acc_High = 0x0A,
+        Set_Acc_Low = 0x0B,
+
+        Set_Balance = 0x0C,
+        Set_Volume_Control = 0x0D,
+        Set_Voices = 0x0E,
+
+        Get_Control = 0x80,
+        Get_Frequency = 0x81,
+        Get_Start_High = 0x82,
+        Get_Start_Low = 0x83,
+        Get_End_High = 0x84,
+        Get_End_Low = 0x85,
+
+        Get_Volume_Rate = 0x86,
+        Get_Volume_Start = 0x87,
+        Get_Volume_ENd = 0x88,
+        Get_Volume = 0x89,
+
+        Get_Acc_High = 0x8A,
+        Get_Acc_Low = 0x8B,
+
+        Get_Balance = 0x8C,
+
+        Get_Volume_Control = 0x8D,
+
+        Get_Voices = 0x8E,
+
+        Get_IRQV = 0x8F,
+
+        Timer_Control = 0x45,
+        Timer_1 = 0x46,
+        Timer_2 = 0x47,
+
+        Set_Sample_Rate = 0x48,
+        Sample_Control = 0x49,
+
+        Master_Reset = 0x4C
     }
 }
