@@ -135,6 +135,89 @@ namespace XMF_Dump
             OutB(port + 0x105, 0xCE); // 14 OR $0C0 ??
         }
 
+        /// <summary>
+        /// Set the volume of a voice (channel)
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="volume">Volume in log scale, 16 bits</param>
+        internal void GUSSetVolume(int voice, int volume)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x103, 0x09);
+            OutW(port + 0x104, volume);
+        }
+
+        /// <summary>
+        /// Set the balance (stereo pan) of a voice/channel
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="balance">0 - left, 7 - middle, 15 - right</param>
+        internal void GUSSetBalance(int voice, int balance)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x103, 0x0C);
+            OutB(port + 0x105, balance);
+        }
+
+        /// <summary>
+        /// Set the frequency of a voice/channel
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="frequency">The frequency, 16 bits</param>
+        internal void GUSSetFrequency(int voice, int frequency)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x103, 0x0C);
+            OutW(port + 0x104, frequency);
+        }
+
+        /// <summary>
+        /// Play the sample addressed by vbegin,
+        /// and parts between vstart and vend offsets.
+        /// </summary>
+        /// <param name="voice"></param>
+        /// <param name="mode"></param>
+        /// <param name="vbegin"></param>
+        /// <param name="vstart"></param>
+        /// <param name="vend"></param>
+        internal void GUSPlayVoice(int voice, int mode, int vbegin, int vstart, int vend)
+        {
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice);
+            OutB(port + 0x102, voice); // ???
+
+            OutB(port + 0x103, 0x0A);
+            OutW(port + 0x104, (vbegin >> 7) & 8191);
+            OutB(port + 0x103, 0x0A);
+            OutW(port + 0x104, (vbegin & 0x7F) >> 8);
+
+            OutB(port + 0x103, 0x02);
+            OutW(port + 0x104, (vstart >> 7) & 8191);
+            OutB(port + 0x103, 0x03);
+            OutW(port + 0x104, (vstart & 0x7F) >> 8);
+
+            OutB(port + 0x103, 0x04);
+            OutW(port + 0x104, (vend >> 7) & 8191);
+            OutB(port + 0x103, 0x05);
+            OutW(port + 0x104, (vend & 0x7F) >> 8);
+
+            OutB(port + 0x103, 0x00);
+            OutB(port + 0x105, mode);
+
+            // Example indicates these have to be also issued
+            // otherwise the card doesn't play sound
+
+            OutB(port + 0x000, 0x01);
+            OutB(port + 0x103, 0x4C);
+            OutB(port + 0x105, 0x03);
+        }
+
         // Helper methods denoting port operations (do nothing, just so the examples compile).
 
         internal byte InB(int port) { return 0; }
