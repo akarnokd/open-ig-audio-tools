@@ -340,8 +340,6 @@ namespace XMF_Dump
 
         Get_Volume_Control = 0x8D,
 
-        Get_IRQV = 0x8F,
-
         Set_Sample_Rate = 0x48,
         Sample_Control = 0x49,
 
@@ -361,6 +359,8 @@ namespace XMF_Dump
         Timer_Control = 0x45,
         Timer_1 = 0x46,
         Timer_2 = 0x47,
+
+        Get_IRQV = 0x8F,
     }
 
     public enum GUS_Volume_Control_Register_Flags
