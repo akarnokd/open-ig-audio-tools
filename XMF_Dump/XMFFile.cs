@@ -99,15 +99,33 @@ namespace XMF_Dump
 
     public class SampleRegistry
     {
-        public long offset1;
-        public long offset2;
-        public long offset3;
-        public long offset4;
+        /// <summary>
+        /// Where should the playback start relative to
+        /// <see cref="startOffset">startOffset</see>.
+        /// </summary>
+        public long playbackShift;
+        /// <summary>
+        /// Shift the <see cref="startOffset">startOffset</see>.
+        /// </summary>
+        public long startShift;
+        /// <summary>
+        /// Where the sample is loaded into the memory.
+        /// </summary>
+        public long startOffset;
+        /// <summary>
+        /// Where the sample ends in memory.
+        /// </summary>
+        public long endOffsetPlus1;
 
-        public long Length { get { return offset4 - offset3;  } }
+        public long Length { get { return endOffsetPlus1 - startOffset;  } }
 
         public byte param0;
-        public byte param1;
+
+        /// <summary>
+        /// Voice control flags:
+        /// <see cref="GUS_Voice_Control_Flags"/>
+        /// </summary>
+        public byte voiceControlFlags;
 
         public ushort frequency;
 
@@ -117,12 +135,12 @@ namespace XMF_Dump
 
         public void LoadFrom(BinaryReader br)
         {
-            offset1 = Read3Bytes(br);
-            offset2 = Read3Bytes(br);
-            offset3 = Read3Bytes(br);
-            offset4 = Read3Bytes(br);
+            playbackShift = Read3Bytes(br);
+            startShift = Read3Bytes(br);
+            startOffset = Read3Bytes(br);
+            endOffsetPlus1 = Read3Bytes(br);
             param0 = br.ReadByte();
-            param1 = br.ReadByte();
+            voiceControlFlags = br.ReadByte();
             frequency = br.ReadUInt16();
             sampleBytes = new byte[Length];
         }
@@ -130,6 +148,56 @@ namespace XMF_Dump
         private int Read3Bytes(BinaryReader br)
         {
             return br.ReadUInt16() + br.ReadByte() * 65536;
+        }
+
+        public string GetVoiceControlFlagsStr()
+        {
+            List<string> list = new();
+            /*
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Stop_Voice) != 0)
+            {
+                list.Add("Stop Voice");
+            }
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Stopped) != 0)
+            {
+                list.Add("Voice Stopped");
+            }
+            */
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Data_Type_16_bit) != 0)
+            {
+                list.Add("16 Bit");
+            }
+            else
+            {
+                list.Add(" 8 Bit");
+            }
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Loop_Enable) != 0)
+            {
+                list.Add("Loop");
+            }
+            else
+            {
+                list.Add("Once");
+            }
+
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Bi_Directional_Enable) != 0)
+            {
+                list.Add("BiDi Playback");
+            }
+            else
+            {
+                list.Add("Forward Playback");
+            }
+            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Playback_Direction) != 0)
+            {
+                list.Add("Decreasing");
+            }
+            else
+            {
+                list.Add("Increasing");
+            }
+
+            return string.Join("|", list);
         }
     }
 

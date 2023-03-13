@@ -320,7 +320,6 @@ namespace XMF_Dump
 
         Set_Balance = 0x0C,
         Set_Volume_Control = 0x0D,
-        Set_Voices = 0x0E,
 
         Get_Control = 0x80,
         Get_Frequency = 0x81,
@@ -341,17 +340,50 @@ namespace XMF_Dump
 
         Get_Volume_Control = 0x8D,
 
-        Get_Voices = 0x8E,
-
         Get_IRQV = 0x8F,
-
-        Timer_Control = 0x45,
-        Timer_1 = 0x46,
-        Timer_2 = 0x47,
 
         Set_Sample_Rate = 0x48,
         Sample_Control = 0x49,
 
-        Master_Reset = 0x4C
+    }
+
+    public enum GUS_Global_Control
+    {
+        Set_Voices = 0x0E,
+        Master_Reset = 0x4C,
+        Get_Voices = 0x8E,
+
+        DMA_Control = 0x41,
+        DMA_Set_Address = 0x42,
+        DMA_Set_Address_Low = 0x43,
+        DMA_Set_Address_High = 0x44,
+
+        Timer_Control = 0x45,
+        Timer_1 = 0x46,
+        Timer_2 = 0x47,
+    }
+
+    public enum GUS_Volume_Control_Register_Flags
+    {
+        Volume_Stopped = 0x01,
+        Stop_Volume = 0x02,
+        Volume_Control_Rollover = 0x04,
+        Volume_Loop_Enable = 0x08,
+        Volume_Bi_Directional_Loop = 0x10,
+        Volume_Wave_IRQ = 0x20,
+        Volume_Direct = 0x40,
+        Volume_IRQ_Pending = 0x80
+    }
+
+    public enum GUS_Voice_Control_Flags
+    {
+        Voice_Stopped = 0x01,
+        Stop_Voice = 0x02,
+        Voice_Data_Type_16_bit = 0x04,
+        Voice_Loop_Enable = 0x08,
+        Voice_Bi_Directional_Enable = 0x10,
+        Voice_Wave_IRQ = 0x20,
+        Voice_Playback_Direction = 0x40,
+        Voice_IRQ_Pending = 0x80
     }
 }

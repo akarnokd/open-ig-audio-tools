@@ -29,8 +29,8 @@ void ProcessFile(string filename)
     foreach (var regEntry in xmf.sampleRegistry)
     {
 
-        Console.WriteLine(string.Format("    [{0:000}] Length: {1}, P1: {2}, P2: {3}, Frequency: {4}",
-            i + 1, regEntry.Length, regEntry.param0, regEntry.param1, regEntry.frequency));
+        Console.WriteLine(string.Format("    [{0:000}] Length: {1,6}, P1: {2,3}, Control: {3}, Frequency: {4}",
+            i + 1, regEntry.Length, regEntry.param0, regEntry.GetVoiceControlFlagsStr(), regEntry.frequency));
         i++;
     }
     Console.WriteLine();
