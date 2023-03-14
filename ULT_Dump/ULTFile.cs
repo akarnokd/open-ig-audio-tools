@@ -30,6 +30,8 @@ namespace ULT_Dump
 
         internal readonly List<ULTSample> samples = new();
 
+        internal int activePatterns;
+
         internal readonly List<byte> patternOrders = new();
 
         internal int tracks;

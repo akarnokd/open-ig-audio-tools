@@ -6,11 +6,17 @@ using System.Xml.Serialization;
 using ULT_Dump;
 using XMF_Dump;
 
-Convert("MAIN1.XMF");
+foreach (var file in Directory.EnumerateFiles(Directory.GetCurrentDirectory()))
+{
+    if (Path.GetExtension(file).ToUpper() == ".XMF")
+    {
+        Convert(file);
+    }
+}
 
 void Convert(string fileName)
 {
-    Console.WriteLine("Converting " + Path.GetFileName(fileName));
+    Console.Write("Converting " + Path.GetFileName(fileName));
 
     var xmf = new XMFFile();
 
@@ -48,6 +54,7 @@ void Convert(string fileName)
     for (int j = 0; j < xmf.sectionIndexes.Count; j++)
     {
         ult.patternOrders.Add(xmf.sectionIndexes[j]);
+        ult.activePatterns++;
     }
     for (int j = xmf.sectionIndexes.Count; j < 256; j++)
     {
@@ -90,4 +97,18 @@ void Convert(string fileName)
     {
         ult.SaveTo(bw);
     }
+    /*
+    var beatsPerMinute = 80d;
+    var beatsPerSection = 64;
+    var speed = 6d;
+    
+    var time = ult.activePatterns * beatsPerSection / beatsPerMinute / speed;
+
+    var mins = (int)time;
+    var seconds = (int)((time - (int)time) * 60);
+
+    Console.Write(" | {0:00}:{1:00} | {2} ", mins, seconds, ult.activePatterns * beatsPerSection);
+    */
+
+    Console.WriteLine();
 }

@@ -4,7 +4,12 @@
 
 using ULT_Dump;
 
-DumpULTFile("MAIN3.ULT");
+var str = "MAIN1.ULT";
+if (args.Length > 0)
+{
+    str = args[0];
+}
+DumpULTFile(str);
 
 void DumpULTFile(string filename)
 {
