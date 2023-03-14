@@ -37,6 +37,8 @@ void Convert(string fileName)
         ultSample.sizeStart = xmfSample.startOffset;
         ultSample.sizeEnd = xmfSample.endOffsetPlus1;
         ultSample.volume = xmfSample.volume;
+        ultSample.bidiAndLoopFlags = xmfSample.bidiLoop;
+        ultSample.finetuneSettings = 0;
         ultSample.frequency = xmfSample.frequency;
         ultSample.data = xmfSample.data;
 

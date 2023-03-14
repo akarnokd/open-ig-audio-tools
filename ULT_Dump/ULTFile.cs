@@ -192,14 +192,7 @@ namespace ULT_Dump
                EVENT (j >> 6, i, j & 0x3f)
              */
 
-            /*
-            int bytesPerSection = 64 * 5 * tracks;
-            int offset = section * bytesPerSection + track * tracks * 5 + row * 5;
-            */
-            int bytesPerSection = 5 * 64 * tracks;
-            int bytesPerTrack = 5 * 64;
-            int bytesPerEvent = 5;
-            int offset = bytesPerSection * section + bytesPerTrack * track + row * bytesPerEvent;
+            int offset = track * 64 * 5 * patterns + section * 64 * 5 + row * 5;
 
             trackData[offset++] = note;
             trackData[offset++] = instrument;
