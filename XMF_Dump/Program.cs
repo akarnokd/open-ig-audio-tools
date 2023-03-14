@@ -60,7 +60,7 @@ void ProcessFile(string filename)
             writer.WriteLine();
             rowCounter++;
         }
-
+        /*
         writer.WriteLine();
 
         var set = new HashSet<string>();
@@ -98,5 +98,6 @@ void ProcessFile(string filename)
             writer.WriteLine(st);
         }
         writer.WriteLine("--");
+        */
     }
 }

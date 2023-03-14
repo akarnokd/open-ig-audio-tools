@@ -12,5 +12,8 @@
     <Compile Include="..\XMF_Dump\GUS_API.cs" Link="GUS_API.cs" />
     <Compile Include="..\XMF_Dump\XMFFile.cs" Link="XMFFile.cs" />
   </ItemGroup>
+	<Target Name="CopyDLLs" AfterTargets="Build">
+		<Copy SourceFiles="$(TargetDir)$(AssemblyName).exe" DestinationFolder="$(SolutionDir)" />
+	</Target>
 
 </Project>
