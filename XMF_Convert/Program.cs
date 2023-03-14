@@ -1,6 +1,7 @@
 ﻿// Copyright (c) David Karnok, 2023
 // Licensed under the Apache License, Version 2.0
 
+using System.Diagnostics;
 using System.Xml.Serialization;
 using ULT_Dump;
 using XMF_Dump;
@@ -13,9 +14,10 @@ void Convert(string fileName)
 
     var xmf = new XMFFile();
 
-    using BinaryReader br = new BinaryReader(new FileStream(fileName, FileMode.Open));
-
-    xmf.LoadFrom(br);
+    using (BinaryReader br = new BinaryReader(new FileStream(fileName, FileMode.Open)))
+    {
+        xmf.LoadFrom(br);
+    }
 
     var ult = new ULTFile();
     ult.magic = ULTFile.magicConst;
@@ -55,6 +57,10 @@ void Convert(string fileName)
     foreach (var pan in xmf.trackPans)
     {
         ult.trackPans.Add(pan);
+        if (ult.trackPans.Count == ult.tracks)
+        {
+            break;
+        }
     }
 
     ult.ResetTrackData();
@@ -70,7 +76,7 @@ void Convert(string fileName)
             {
                 ult.SetTrackData(sectionIndex, rowIndex, track,
                     instr.note, instr.sampleNumber, instr.func1, instr.func2, instr.func2_Param, instr.func1_Param
-                    );
+                );
                 track++;
             }
             rowIndex++;
@@ -78,6 +84,8 @@ void Convert(string fileName)
         sectionIndex++;
     }
 
-    using BinaryWriter bw = new BinaryWriter(new FileStream(fileName + ".ULT", FileMode.Create));
-    ult.SaveTo(bw);
+    using (BinaryWriter bw = new BinaryWriter(new FileStream(fileName + ".ULT", FileMode.Create)))
+    {
+        ult.SaveTo(bw);
+    }
 }

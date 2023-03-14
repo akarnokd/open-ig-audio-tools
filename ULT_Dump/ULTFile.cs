@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ULT_Dump
 {
     /// <summary>
-    /// https://fossies.org/linux/libxmp/src/loaders/ult_load.c
+    /// https://github.com/libxmp/libxmp/blob/master/src/loaders/ult_load.c
     /// </summary>
     internal class ULTFile
     {
@@ -184,8 +184,22 @@ namespace ULT_Dump
         /// <param name="f1Param"></param>
         internal void SetTrackData(int section, int row, int track, byte note, byte instrument, byte f1, byte f2, byte f2Param, byte f1Param)
         {
+            /*
+               #define TRACK_NUM(a,c)	m->mod.xxp[a]->index[c]
+               #define EVENT(a,c,r)	m->mod.xxt[TRACK_NUM((a),(c))]->event[r]
+               
+               i = channel index
+               EVENT (j >> 6, i, j & 0x3f)
+             */
+
+            /*
             int bytesPerSection = 64 * 5 * tracks;
             int offset = section * bytesPerSection + track * tracks * 5 + row * 5;
+            */
+            int bytesPerSection = 5 * 64 * tracks;
+            int bytesPerTrack = 5 * 64;
+            int bytesPerEvent = 5;
+            int offset = bytesPerSection * section + bytesPerTrack * track + row * bytesPerEvent;
 
             trackData[offset++] = note;
             trackData[offset++] = instrument;
