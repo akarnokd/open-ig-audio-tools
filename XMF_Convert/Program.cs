@@ -97,7 +97,7 @@ void Convert(string fileName)
                 }
                 if (instr.func1 == 0x0C)
                 {
-                    f1p = (byte)(f1p * globalVolume[track] / 15d);
+                    f1p = (byte)Math.Abs(f1p + globalVolume[track]);
                 }
 
                 var f2 = instr.func2;
@@ -110,7 +110,8 @@ void Convert(string fileName)
                 }
                 if (instr.func2 == 0x0C)
                 {
-                    f1p = (byte)(f2p * globalVolume[track] / 15d);
+                    // f2p = (byte)(f2p * globalVolume[track] / 7d);
+                    f2p = (byte)Math.Abs(f2p + globalVolume[track]);
                 }
 
                 ult.SetTrackData(sectionIndex, rowIndex, track,
