@@ -57,15 +57,25 @@ void Convert(string fileName)
         ult.trackPans.Add(pan);
     }
 
+    ult.ResetTrackData();
+
+    int sectionIndex = 0;
     foreach (var section in xmf.instructionSections)
     {
+        int rowIndex = 0;
         foreach (var row in section.rows)
         {
+            int track = 0;
             foreach (var instr in row.columns)
             {
-                ult.AddTrackData(instr.note, instr.sampleNumber, instr.func1, instr.func2, instr.func2_Param, instr.func1_Param);
+                ult.SetTrackData(sectionIndex, rowIndex, track,
+                    instr.note, instr.sampleNumber, instr.func1, instr.func2, instr.func2_Param, instr.func1_Param
+                    );
+                track++;
             }
+            rowIndex++;
         }
+        sectionIndex++;
     }
 
     using BinaryWriter bw = new BinaryWriter(new FileStream(fileName + ".ULT", FileMode.Create));

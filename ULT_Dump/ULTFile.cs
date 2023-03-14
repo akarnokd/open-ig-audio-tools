@@ -154,9 +154,32 @@ namespace ULT_Dump
         {
             trackData.Add(note);
             trackData.Add(instrument);
-            trackData.Add((byte)((f1 << 4) | (f2 & 0xF)));
+            trackData.Add((byte)((f1 & 0xF0) | (f2 & 0xF)));
             trackData.Add(f2Param);
             trackData.Add(f1Param);
+        }
+
+        internal void ResetTrackData()
+        {
+            var len = tracks * patterns * 64 * 5;
+            trackData.Clear();
+            trackData.Capacity = len;
+            for (int i = 0; i < len; i++)
+            {
+                trackData.Add(0);
+            }
+        }
+
+        internal void SetTrackData(int section, int row, int track, byte note, byte instrument, byte f1, byte f2, byte f2Param, byte f1Param)
+        {
+            int bytesPerSection = 64 * 5 * tracks;
+
+            int offset = section * bytesPerSection + row * tracks * 5 + track;
+            trackData[offset++] = note;
+            trackData[offset++] = instrument;
+            trackData[offset++] = (byte)((f1 & 0xF0) | (f2 & 0xF));
+            trackData[offset++] = f2Param;
+            trackData[offset++] = f1Param;
         }
 
         internal static string ReadChars(BinaryReader br, int count)
