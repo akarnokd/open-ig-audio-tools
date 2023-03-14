@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
@@ -70,11 +71,12 @@ namespace ULT_Dump
                 trackPans.Add(br.ReadByte());
             }
 
-            trackData.Capacity = tracks * patterns * 6;
+            var perTrackLength = patterns * 64 * 5;
+            trackData.Capacity = perTrackLength * tracks;
 
             for (int i = 0; i < tracks; i++)
             {
-                for (int j = 0; j < patterns * 64;)
+                for (int j = 0; j < perTrackLength;)
                 {
                     var b = br.ReadByte();
                     var cnt = 1;
@@ -101,9 +103,10 @@ namespace ULT_Dump
                         trackData.Add(f3);
                         trackData.Add(f4);
                     }
+                    j += cnt * 5;
                 }
             }
-            
+
             foreach (var smp in samples)
             {
                 smp.LoadData(br);

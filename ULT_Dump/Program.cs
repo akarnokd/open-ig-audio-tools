@@ -41,13 +41,8 @@ void DumpULTFile(string filename)
 
     var pos = br.BaseStream.Position;
 
-    Console.WriteLine(string.Format("{0:X8} - {1:X8}", pos,
-        pos + ultFile.tracks * ultFile.patterns * 6 * 125));
+    Console.WriteLine(string.Format("{0:X8}", pos));
 
     var sampleStart = br.BaseStream.Length - len;
     Console.WriteLine(string.Format("{0:X8}", sampleStart));
-
-    Console.WriteLine(sampleStart - pos);
-    Console.WriteLine((sampleStart - pos) / (double)(ultFile.tracks));
-    Console.WriteLine((sampleStart - pos) / (double)(ultFile.patterns));
 }
