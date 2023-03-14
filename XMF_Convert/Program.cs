@@ -118,13 +118,14 @@ void Convert(string fileName)
 
 void RemapInstr(byte xmfInstr, byte xmfArg, out byte ultInstr, out byte ultArg)
 {
-    // XMF uses 0x10 to indicate setting the current balance
+    /*
     if (xmfInstr == 0x10)
     {
-        ultInstr = 0x0B;
+        ultInstr = 0x01;
         ultArg = xmfArg;
         return;
     }
+    */
     ultInstr = xmfInstr;
     ultArg = xmfArg;
 }

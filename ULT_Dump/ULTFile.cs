@@ -156,7 +156,7 @@ namespace ULT_Dump
         {
             trackData.Add(note);
             trackData.Add(instrument);
-            trackData.Add((byte)((f1 & 0xF0) | (f2 & 0xF)));
+            trackData.Add((byte)((f1 << 4) | (f2 & 0xF)));
             trackData.Add(f2Param);
             trackData.Add(f1Param);
         }
@@ -184,7 +184,7 @@ namespace ULT_Dump
         /// <param name="f2"></param>
         /// <param name="f2Param"></param>
         /// <param name="f1Param"></param>
-        internal void SetTrackData(int section, int row, int track, byte note, byte instrument, byte f1, byte f2, byte f2Param, byte f1Param)
+        internal void SetTrackData(int section, int row, int track, byte note, byte instrument, byte f1, byte f1Param, byte f2, byte f2Param)
         {
             /*
                #define TRACK_NUM(a,c)	m->mod.xxp[a]->index[c]

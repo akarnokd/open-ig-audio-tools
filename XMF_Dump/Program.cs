@@ -60,5 +60,38 @@ void ProcessFile(string filename)
             writer.WriteLine();
             rowCounter++;
         }
+
+        /*
+        writer.WriteLine();
+
+        var set = new HashSet<byte>();
+        var set2 = new HashSet<byte>();
+        foreach (var s in xmf.instructionSections)
+        {
+            foreach (var r in s.rows)
+            {
+                foreach (var instr in r.columns)
+                {
+                    set.Add(instr.func1);
+                    set2.Add(instr.func2);
+                }
+            }
+        }
+
+        
+        writer.WriteLine();
+
+        foreach (var st in set)
+        {
+            writer.WriteLine(string.Format("{0:X2}", st));
+        }
+
+        writer.WriteLine();
+
+        foreach (var st in set2)
+        {
+            writer.WriteLine(string.Format("{0:X2}", st));
+        }
+        */
     }
 }
