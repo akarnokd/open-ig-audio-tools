@@ -170,11 +170,23 @@ namespace ULT_Dump
             }
         }
 
+        /// <summary>
+        /// The data is organized as section/track/row
+        /// </summary>
+        /// <param name="section"></param>
+        /// <param name="row"></param>
+        /// <param name="track"></param>
+        /// <param name="note"></param>
+        /// <param name="instrument"></param>
+        /// <param name="f1"></param>
+        /// <param name="f2"></param>
+        /// <param name="f2Param"></param>
+        /// <param name="f1Param"></param>
         internal void SetTrackData(int section, int row, int track, byte note, byte instrument, byte f1, byte f2, byte f2Param, byte f1Param)
         {
             int bytesPerSection = 64 * 5 * tracks;
+            int offset = section * bytesPerSection + track * tracks * 5 + row * 5;
 
-            int offset = section * bytesPerSection + row * tracks * 5 + track;
             trackData[offset++] = note;
             trackData[offset++] = instrument;
             trackData[offset++] = (byte)((f1 & 0xF0) | (f2 & 0xF));
