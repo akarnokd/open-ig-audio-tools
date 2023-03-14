@@ -61,37 +61,42 @@ void ProcessFile(string filename)
             rowCounter++;
         }
 
-        /*
         writer.WriteLine();
 
-        var set = new HashSet<byte>();
-        var set2 = new HashSet<byte>();
+        var set = new HashSet<string>();
+        var set2 = new HashSet<string>();
         foreach (var s in xmf.instructionSections)
         {
             foreach (var r in s.rows)
             {
                 foreach (var instr in r.columns)
                 {
-                    set.Add(instr.func1);
-                    set2.Add(instr.func2);
+                    if (instr.func1 == 16)
+                    {
+                        set.Add(string.Format("{0:X2} - {1:X2}", instr.func1, instr.func1_Param));
+                    }
+                    if (instr.func2 == 16)
+                    {
+                        set2.Add(string.Format("{0:X2} - {1:X2}", instr.func2, instr.func2_Param));
+                    }
                 }
             }
         }
 
         
-        writer.WriteLine();
+        writer.WriteLine("--");
 
         foreach (var st in set)
         {
-            writer.WriteLine(string.Format("{0:X2}", st));
+            writer.WriteLine(st);
         }
 
-        writer.WriteLine();
+        writer.WriteLine("--");
 
         foreach (var st in set2)
         {
-            writer.WriteLine(string.Format("{0:X2}", st));
+            writer.WriteLine(st);
         }
-        */
+        writer.WriteLine("--");
     }
 }

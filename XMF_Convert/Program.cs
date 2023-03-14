@@ -118,14 +118,14 @@ void Convert(string fileName)
 
 void RemapInstr(byte xmfInstr, byte xmfArg, out byte ultInstr, out byte ultArg)
 {
-    /*
+    // Fast Tracker II - Set Global Volume instruction
     if (xmfInstr == 0x10)
     {
-        ultInstr = 0x01;
-        ultArg = xmfArg;
+        // Not available in Ultratracker v4 so we set the sample volume instead?
+        ultInstr = 0x00;
+        ultArg = 0x00; // xmfArg;
         return;
     }
-    */
     ultInstr = xmfInstr;
     ultArg = xmfArg;
 }
