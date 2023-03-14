@@ -198,9 +198,16 @@ namespace ULT_Dump
 
             trackData[offset++] = note;
             trackData[offset++] = instrument;
-            trackData[offset++] = (byte)((f1 & 0xF0) | (f2 & 0xF));
+            trackData[offset++] = (byte)(((f1 & 0xF) << 4) | (f2 & 0xF));
             trackData[offset++] = f2Param;
             trackData[offset++] = f1Param;
+
+            /*
+            if (f1 >= 16)
+            {
+                Console.WriteLine(string.Format("F1 out of bounds {0:X2}({1:X2})  {2:X2}({3:X2})", f1, f1Param, f2, f2Param));
+            }
+            */
         }
 
         internal static string ReadChars(BinaryReader br, int count)

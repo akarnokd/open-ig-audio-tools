@@ -83,8 +83,11 @@ void Convert(string fileName)
             int track = 0;
             foreach (var instr in row.columns)
             {
+                RemapInstr(instr.func1, instr.func1_Param, out var f1, out var f1p);
+                RemapInstr(instr.func2, instr.func2_Param, out var f2, out var f2p);
+
                 ult.SetTrackData(sectionIndex, rowIndex, track,
-                    instr.note, instr.sampleNumber, instr.func1, instr.func2, instr.func2_Param, instr.func1_Param
+                    instr.note, instr.sampleNumber, f1, f1p, f2, f2p
                 );
                 track++;
             }
@@ -111,4 +114,17 @@ void Convert(string fileName)
     */
 
     Console.WriteLine();
+}
+
+void RemapInstr(byte xmfInstr, byte xmfArg, out byte ultInstr, out byte ultArg)
+{
+    // XMF uses 0x10 to indicate setting the current balance
+    if (xmfInstr == 0x10)
+    {
+        ultInstr = 0x0B;
+        ultArg = xmfArg;
+        return;
+    }
+    ultInstr = xmfInstr;
+    ultArg = xmfArg;
 }
