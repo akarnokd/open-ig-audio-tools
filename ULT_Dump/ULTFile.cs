@@ -43,6 +43,7 @@ namespace ULT_Dump
         internal void SaveTo(BinaryWriter bw)
         {
             WriteChars(bw, magicConst.Length, magic);
+            WriteChars(bw, 4, version4Digit);
             WriteChars(bw, 32, songTitle);
             bw.Write((byte)songTexts.Count);
             foreach (var st in songTexts)

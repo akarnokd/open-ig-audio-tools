@@ -37,6 +37,8 @@ void Convert(string fileName)
         ultSample.volume = xmfSample.volume;
         ultSample.frequency = xmfSample.frequency;
         ultSample.data = xmfSample.data;
+
+        ult.samples.Add(ultSample);
         i++;
     }
     for (int j = 0; j < xmf.sectionIndexes.Count; j++)
@@ -49,6 +51,11 @@ void Convert(string fileName)
     }
     ult.tracks = xmf.sampleCount;
     ult.patterns = xmf.sectionCount;
+
+    foreach (var pan in xmf.trackPans)
+    {
+        ult.trackPans.Add(pan);
+    }
 
     foreach (var section in xmf.instructionSections)
     {

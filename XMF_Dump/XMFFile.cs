@@ -22,7 +22,7 @@ namespace XMF_Dump
         public int sectionCount;
 
         // Not sure what these are, one per sample.
-        public readonly List<byte> controlFlags = new();
+        public readonly List<byte> trackPans = new();
 
         public readonly List<InstructionSection> instructionSections = new();
 
@@ -67,7 +67,7 @@ namespace XMF_Dump
 
             for (int i = 0; i < sampleCount; i++)
             {
-                controlFlags.Add(reader.ReadByte());
+                trackPans.Add(reader.ReadByte());
             }
 
             for (int sectionIndex = 0; sectionIndex < sectionCount; sectionIndex++)
