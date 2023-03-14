@@ -297,4 +297,23 @@ namespace ULT_Dump
             bw.Write(data);
         }
     }
+
+    internal class ULTInstruction
+    {
+        internal byte note;
+        internal byte instrument;
+        internal byte f1f2;
+        internal byte f2Param;
+        internal byte f1Param;
+
+        internal byte F1
+        {
+            get { return (byte)(f1f2 >> 4); }
+        }
+
+        internal byte F2
+        {
+            get { return (byte)(f1f2 & 0xF); }
+        }
+    }
 }

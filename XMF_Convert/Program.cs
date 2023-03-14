@@ -75,6 +75,8 @@ void Convert(string fileName)
     ult.ResetTrackData();
 
     int sectionIndex = 0;
+    byte[] globalVolume = new byte[ult.tracks];
+
     foreach (var section in xmf.instructionSections)
     {
         int rowIndex = 0;
@@ -83,8 +85,33 @@ void Convert(string fileName)
             int track = 0;
             foreach (var instr in row.columns)
             {
-                RemapInstr(instr.func1, instr.func1_Param, out var f1, out var f1p);
-                RemapInstr(instr.func2, instr.func2_Param, out var f2, out var f2p);
+                // Global volume setting is not supported by the ULT format
+                // We'll try to pre-multiply the individual Set Volume commands.
+                var f1 = instr.func1;
+                var f1p = instr.func1_Param;
+                if (instr.func1 == 0x10)
+                {
+                    globalVolume[track] = instr.func1_Param;
+                    f1 = 0x00;
+                    f1p = 0x00;
+                }
+                if (instr.func1 == 0x0C)
+                {
+                    f1p = (byte)(f1p * globalVolume[track] / 15d);
+                }
+
+                var f2 = instr.func2;
+                var f2p = instr.func2_Param;
+                if (instr.func2 == 0x10)
+                {
+                    globalVolume[track] = instr.func2_Param;
+                    f2 = 0x00;
+                    f2p = 0x00;
+                }
+                if (instr.func2 == 0x0C)
+                {
+                    f1p = (byte)(f2p * globalVolume[track] / 15d);
+                }
 
                 ult.SetTrackData(sectionIndex, rowIndex, track,
                     instr.note, instr.sampleNumber, f1, f1p, f2, f2p
