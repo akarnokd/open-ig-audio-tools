@@ -30,7 +30,7 @@ void ProcessFile(string filename)
     {
 
         Console.WriteLine(string.Format("    [{0:000}] Length: {1,6}, P1: {2,3}, Control: {3}, Frequency: {4}",
-            i + 1, regEntry.Length, regEntry.param0, regEntry.GetVoiceControlFlagsStr(), regEntry.frequency));
+            i + 1, regEntry.Length, regEntry.volume, regEntry.GetVoiceControlFlagsStr(), regEntry.frequency));
         i++;
     }
     Console.WriteLine();

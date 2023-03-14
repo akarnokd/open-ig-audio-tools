@@ -92,7 +92,7 @@ namespace XMF_Dump
 
             foreach (var regEntry in sampleRegistry)
             {
-                reader.Read(regEntry.sampleBytes);
+                reader.Read(regEntry.data);
             }
         }
     }
@@ -103,34 +103,34 @@ namespace XMF_Dump
         /// Where should the playback start relative to
         /// <see cref="startOffset">startOffset</see>.
         /// </summary>
-        public long playbackShift;
+        public int playbackShift;
         /// <summary>
         /// Shift the <see cref="startOffset">startOffset</see>.
         /// </summary>
-        public long startShift;
+        public int startShift;
         /// <summary>
         /// Where the sample is loaded into the memory.
         /// </summary>
-        public long startOffset;
+        public int startOffset;
         /// <summary>
         /// Where the sample ends in memory.
         /// </summary>
-        public long endOffsetPlus1;
+        public int endOffsetPlus1;
 
-        public long Length { get { return endOffsetPlus1 - startOffset;  } }
+        public int Length { get { return endOffsetPlus1 - startOffset;  } }
 
-        public byte param0;
+        public byte volume;
 
         /// <summary>
         /// Voice control flags:
         /// <see cref="GUS_Voice_Control_Flags"/>
         /// </summary>
-        public byte voiceControlFlags;
+        public byte bidiLoop;
 
         public ushort frequency;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public byte[] sampleBytes;
+        public byte[] data;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public void LoadFrom(BinaryReader br)
@@ -139,10 +139,10 @@ namespace XMF_Dump
             startShift = Read3Bytes(br);
             startOffset = Read3Bytes(br);
             endOffsetPlus1 = Read3Bytes(br);
-            param0 = br.ReadByte();
-            voiceControlFlags = br.ReadByte();
+            volume = br.ReadByte();
+            bidiLoop = br.ReadByte();
             frequency = br.ReadUInt16();
-            sampleBytes = new byte[Length];
+            data = new byte[Length];
         }
 
         private int Read3Bytes(BinaryReader br)
@@ -163,7 +163,7 @@ namespace XMF_Dump
                 list.Add("Voice Stopped");
             }
             */
-            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Data_Type_16_bit) != 0)
+            if ((bidiLoop & (byte)GUS_Voice_Control_Flags.Voice_Data_Type_16_bit) != 0)
             {
                 list.Add("16 Bit");
             }
@@ -171,7 +171,7 @@ namespace XMF_Dump
             {
                 list.Add(" 8 Bit");
             }
-            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Loop_Enable) != 0)
+            if ((bidiLoop & (byte)GUS_Voice_Control_Flags.Voice_Loop_Enable) != 0)
             {
                 list.Add("Loop");
             }
@@ -180,7 +180,7 @@ namespace XMF_Dump
                 list.Add("Once");
             }
 
-            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Bi_Directional_Enable) != 0)
+            if ((bidiLoop & (byte)GUS_Voice_Control_Flags.Voice_Bi_Directional_Enable) != 0)
             {
                 list.Add("BiDi Playback");
             }
@@ -188,7 +188,7 @@ namespace XMF_Dump
             {
                 list.Add("Forward Playback");
             }
-            if ((voiceControlFlags & (byte)GUS_Voice_Control_Flags.Voice_Playback_Direction) != 0)
+            if ((bidiLoop & (byte)GUS_Voice_Control_Flags.Voice_Playback_Direction) != 0)
             {
                 list.Add("Decreasing");
             }

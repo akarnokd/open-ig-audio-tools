@@ -40,6 +40,42 @@ namespace ULT_Dump
 
         internal readonly List<byte> trackData = new();
 
+        internal void SaveTo(BinaryWriter bw)
+        {
+            WriteChars(bw, magicConst.Length, magic);
+            WriteChars(bw, 32, songTitle);
+            bw.Write((byte)songTexts.Count);
+            foreach (var st in songTexts)
+            {
+                WriteChars(bw, 32, st);
+            }
+            bw.Write((byte)samples.Count);
+            foreach (var smp in samples)
+            {
+                smp.SaveTo(bw);
+            }
+            foreach (var po in patternOrders)
+            {
+                bw.Write(po);
+            }
+            bw.Write((byte)(tracks - 1));
+            bw.Write((byte)(patterns - 1));
+            foreach (var panPos in trackPans)
+            {
+                bw.Write(panPos);
+            }
+
+            foreach (var instr in trackData)
+            {
+                bw.Write(instr);
+            }
+
+            foreach (var smp in samples)
+            {
+                smp.SaveData(bw);
+            }
+        }
+
         internal void LoadFrom(BinaryReader br)
         {
             magic = ReadChars(br, magicConst.Length);
@@ -113,6 +149,15 @@ namespace ULT_Dump
             }
         }
 
+        internal void AddTrackData(byte note, byte instrument, byte f1, byte f2, byte f2Param, byte f1Param)
+        {
+            trackData.Add(note);
+            trackData.Add(instrument);
+            trackData.Add((byte)((f1 << 4) | (f2 & 0xF)));
+            trackData.Add(f2Param);
+            trackData.Add(f1Param);
+        }
+
         internal static string ReadChars(BinaryReader br, int count)
         {
             StringBuilder sb = new();
@@ -142,7 +187,7 @@ namespace ULT_Dump
     {
         internal string name;
         internal string dosName;
-        internal uint loopStart;
+        internal int loopStart;
         internal int loopEnd;
         internal int sizeStart;
         internal int sizeEnd;
@@ -165,20 +210,39 @@ namespace ULT_Dump
         {
             name = ULTFile.ReadChars(br, 32);
             dosName = ULTFile.ReadChars(br, 12);
-            loopStart = br.ReadUInt32();
+            loopStart = br.ReadInt32();
             loopEnd = br.ReadInt32();
             sizeStart = br.ReadInt32();
             sizeEnd = br.ReadInt32();
             volume = br.ReadByte();
             bidiAndLoopFlags = br.ReadByte();
-            frequency = br.ReadUInt16();
             finetuneSettings = br.ReadUInt16();
+            frequency = br.ReadUInt16();
+        }
+
+        internal void SaveTo(BinaryWriter bw)
+        {
+            ULTFile.WriteChars(bw, 32, name);
+            ULTFile.WriteChars(bw, 12, dosName);
+            bw.Write(loopStart);
+            bw.Write(loopEnd);
+            bw.Write(sizeStart);
+            bw.Write(sizeEnd);
+            bw.Write(volume);
+            bw.Write(bidiAndLoopFlags);
+            bw.Write(finetuneSettings);
+            bw.Write(frequency);
         }
 
         internal void LoadData(BinaryReader br)
         {
             data = new byte[Length];
             br.Read(data);
+        }
+
+        internal void SaveData(BinaryWriter bw)
+        {
+            bw.Write(data);
         }
     }
 }
